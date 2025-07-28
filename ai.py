@@ -1,7 +1,6 @@
 from openai import OpenAI
-from dotenv import load_dotenv
 
-load_dotenv()
+
 
 def get_personality_analysis(face_desc: str) -> str:
     """
@@ -11,8 +10,12 @@ def get_personality_analysis(face_desc: str) -> str:
     prompt = "당신은 전문 관상가입니다. "
     prompt += "사람들의 얼굴 특징을 보고 성격과 미래를 친근하게 분석해주세요."
     prompt += "\n 얼굴 특징 : " + face_desc
+    
+   
 
-    client = OpenAI("OPENAI_API_KEY")  # OPENAI_API_KEY 환경변수 지정이 필요
+    # OPENAI_API_KEY 환경변수 지정이 필요
+    client = OpenAI()  
+
 
     response = client.responses.create(
         model="gpt-4o",  # 사용할 두뇌 지정
