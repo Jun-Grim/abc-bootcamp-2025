@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>멜론 검색 결과</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* 커스텀 스크롤바 스타일 (선택 사항) */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans p-4">
+
+    <div class="max-w-6xl mx-auto bg-white shadow-lg rounded-lg p-6">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">멜론 검색 결과: "idol"</h1>
+
+        <div class="flex border-b border-gray-200 mb-6" id="tab-buttons">
+            <button class="tab-button py-2 px-4 text-lg font-medium text-gray-600 hover:text-blue-600 focus:outline-none border-b-2 border-transparent hover:border-blue-500 transition-colors duration-200" data-tab="artists">아티스트</button>
+            <button class="tab-button py-2 px-4 text-lg font-medium text-gray-600 hover:text-blue-600 focus:outline-none border-b-2 border-transparent hover:border-blue-500 transition-colors duration-200" data-tab="songs">노래</button>
+            <button class="tab-button py-2 px-4 text-lg font-medium text-gray-600 hover:text-blue-600 focus:outline-none border-b-2 border-transparent hover:border-blue-500 transition-colors duration-200" data-tab="albums">앨범</button>
+        </div>
+
+        <div id="artists-section" class="tab-content grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-4 bg-gray-50 rounded-lg">
+            <p class="text-gray-500 text-center col-span-full">아티스트 정보가 없습니다.</p>
+        </div>
+
+        <div id="songs-section" class="tab-content hidden grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-4 bg-gray-50 rounded-lg">
+            <p class="text-gray-500 text-center col-span-full">노래 정보가 없습니다.</p>
+        </div>
+
+        <div id="albums-section" class="tab-content hidden grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-4 bg-gray-50 rounded-lg">
+            <p class="text-gray-500 text-center col-span-full">앨범 정보가 없습니다.</p>
+        </div>
+
+        <div class="mt-8">
+            <h2 class="text-xl font-semibold text-gray-700 mb-3">관련 키워드</h2>
+            <div id="keywords-container" class="flex flex-wrap gap-2">
+                <p class="text-gray-500">관련 키워드가 없습니다.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // JSON 데이터 (제공해주신 데이터를 여기에 붙여넣으세요)
+        const jsonData = {
+            'STATUS': '0',
+            'KEYWORD': 'idol',
+            'ARTISTCONTENTS': [{
+                'ARITSTIMG': 'https://cdnimg.melon.co.kr/cm2/artistcrop/images/007/10/093/710093_20250203172605.jpg?97178f75d64593c6780e0b561d23eb1d/melon/resize/40',
+                'NATIONALITYNAME': '캐나다',
+                'ARTISTNAME': 'The Weeknd',
+                'ARTISTNAMEDP': 'The Weeknd',
+                'SEX': '남성',
+                'ACTTYPENAMES': '솔로',
+                'ARTISTID': '710093'
+            }],
+            'SONGCONTENTS': [{
+                'SONGID': '39166714',
+                'ALBUMIMG': 'https://cdnimg.melon.co.kr/cm2/album/images/118/59/863/11859863_20250620104512.jpg?YUV444/melon/resize/40',
+                'ARTISTNAME': 'KPop Demon Hunters Cast,Danny Chung,Saja Boys,Andrew Choi,Neckwav,Kevin Woo,samUIL Lee',
+                'SONGNAME': 'Your Idol',
+                'ALBUMID': '11859863',
+                'ALBUMNAME': 'KPop Demon Hunters (Soundtrack from the Netflix Film)',
+                'SONGNAMEDP': 'Your Idol',
+                'ARTISTID': '4348387,924443,4348388,684312,2740538,669893,4348389'
+            }, {
+                'SONGID': '31266290',
+                'ALBUMIMG': 'https://cdnimg.melon.co.kr/cm/album/images/101/97/480/10197480.jpg?84777617ecc6d64d0177f28466029a74/melon/resize/40',
+                'ARTISTNAME': '방탄소년단',
+                'SONGNAME': 'IDOL',
+                'ALBUMID': '10197480',
+                'ALBUMNAME': "LOVE YOURSELF 結 'Answer'",
+                'SONGNAMEDP': 'IDOL',
+                'ARTISTID': '672375'
+            }, {
+                'SONGID': '39235252',
+                'ALBUMIMG': 'https://cdnimg.melon.co.kr/cm2/album/images/118/75/910/11875910_20250702050958.jpg?2dab3bdca15aa70d7e38a9a73e2595ea/melon/resize/40',
+                'ARTISTNAME': 'CG5',
+                'SONGNAME': 'Your Idol (CG5 Version)',
+                'ALBUMID': '11875910',
+                'ALBUMNAME': 'Your Idol (CG5 Version)',
+                'SONGNAMEDP': 'Your Idol (CG5 Version)',
+                'ARTISTID': '2761085'
+            }, {
+                'SONGID': '36471402',
+                'ALBUMIMG': 'https://cdnimg.melon.co.kr/cm2/album/images/112/50/403/11250403_20230524085012.jpg/melon/resize/40',
+                'ARTISTNAME': 'YOASOBI',
+                'SONGNAME': 'Idol',
+                'ALBUMID': '11250403',
+                'ALBUMNAME': 'Idol',
+                'SONGNAMEDP': 'Idol',
+                'ARTISTID': '2871809'
+            }, {
+                'SONGID': '34753559',
+                'ALBUMIMG': 'https://cdnimg.melon.co.kr/cm2/album/images/108/90/213/10890213_20220311163556.jpg/melon/resize/40',
+                'ARTISTNAME': 'Morpheus,Neptunica',
+                'SONGNAME': 'Super Idol (热爱105°C的你)',
+                'ALBUMID': '10890213',
+                'ALBUMNAME': 'Super Idol (热爱105°C的你)',
+                'SONGNAMEDP': 'Super Idol (热爱105°C的你)',
+                'ARTISTID': '2953234,994274'
+            }, {
+                'SONGID': '36520311',
+                'ALBUMIMG': 'https://cdnimg.melon.co.kr/cm2/album/images/112/62/534/11262534_20230612120056.jpg/melon/resize/40',
+                'ARTISTNAME': 'The Weeknd,Madonna',
+                'SONGNAME': 'Popular (From The Idol Vol. 1 (Music from the HBO Original Series)) (Feat. Playboi Carti)',
+                'ALBUMID': '11262534',
+                'ALBUMNAME': 'Popular (Music from the HBO Original Series)',
+                'SONGNAMEDP': 'Popular (From The Idol Vol. 1 (Music from the HBO Original Series)) (Feat. Playboi Carti)',
+                'ARTISTID': '710093,2081'
+            }, {
+                'SONGID': '35868070',
+                'ALBUMIMG': 'https://cdnimg.melon.co.kr/cm2/album/images/111/10/741/11110741_20221125133430.jpg/melon/resize/40',
+                'ARTISTNAME': 'Green Gao',
+                'SONGNAME': 'SUPER IDOL 的笑容/热爱105°C 的你 (GREEN GAO HARDSTYLE REMIX)',
+                'ALBUMID': '11110741',
+                'ALBUMNAME': 'SUPER IDOL 的笑容/热爱105°C的你 (GREEN GAO HARDSTYLE REMIX)',
+                'SONGNAMEDP': 'SUPER IDOL 的笑容/热爱105°C的你 (GREEN GAO HARDSTYLE REMIX)',
+                'ARTISTID': '3472443'
+            }, {
+                'SONGID': '37239470',
+                'ALBUMIMG': 'https://cdnimg.melon.co.kr/cm2/album/images/114/24/603/11424603_20240221231720.jpg/melon/resize/40',
+                'ARTISTNAME': 'Honeyworks',
+                'SONGNAME': 'HokoritakakiIdol (feat. Kotoha)',
+                'ALBUMID': '11424603',
+                'ALBUMNAME': 'Kokuhakujikkouiinkai -FLYING SONGS- Aishiteru',
+                'SONGNAMEDP': 'HokoritakakiIdol (feat. Kotoha)',
+                'ARTISTID': '1703978'
+            }, {
+                'SONGID': '31266284',
+                'ALBUMIMG': 'https://cdnimg.melon.co.kr/cm/album/images/101/97/480/10197480.jpg?84777617ecc6d64d0177f28466029a74/melon/resize/40',
+                'ARTISTNAME': '방탄소년단',
+                'SONGNAME': 'IDOL (Feat. Nicki Minaj)',
+                'ALBUMID': '10197480',
+                'ALBUMNAME': "LOVE YOURSELF 結 'Answer'",
+                'SONGNAMEDP': 'IDOL (Feat. Nicki Minaj)',
+                'ARTISTID': '672375'
+            }, {
+                'SONGID': '38315703',
+                'ALBUMIMG': 'https://cdnimg.melon.co.kr/cm2/album/images/116/63/075/11663075_20241210172441.jpg?YUV444/melon/resize/40',
+                'ARTISTNAME': 'TAKANE NO NADESHIKO',
+                'SONGNAME': "I'M YOUR IDOL",
+                'ALBUMID': '11663075',
+                'ALBUMNAME': "I'M YOUR IDOL / アドレナリンゲーム(ADRENALINE GAME)",
+                'SONGNAMEDP': "I'M YOUR IDOL",
+                'ARTISTID': '3687934'
+            }],
+            'ALBUMCONTENTS': [{
+                'ALBUMIMG': 'https://cdnimg.melon.co.kr/cm2/album/images/109/82/221/10982221_20220614102851.jpg/melon/resize/40',
+                'ARTISTNAME': 'Kubihuri Dolls',
+                'ALBUMID': '10982221',
+                'ISSUEDATE': '20220615',
+                'ALBUMNAME': 'Doll! Doll! Doll!',
+                'ALBUMNAMEDP': 'Doll! Doll! Doll!'
+            }, {
+                'ALBUMIMG': 'https://cdnimg.melon.co.kr/cm2/album/images/111/67/120/11167120_20230206165454.jpg/melon/resize/40',
+                'ARTISTNAME': 'IDOLOJIN(이돌로진)',
+                'ALBUMID': '11167120',
+                'ISSUEDATE': '20230207',
+                'ALBUMNAME': '나만의 멋 (My own style)',
+                'ALBUMNAMEDP': '나만의 멋 (My own style)'
+            }, {
+                'ALBUMIMG': 'https://cdnimg.melon.co.kr/cm2/album/images/116/37/713/11637713_20241111103850.jpg?5b62df6ad56041b8bd07389f2ffc1f67/melon/resize/40',
+                'ARTISTNAME': 'Nijigasaki High School Idol Club',
+                'ALBUMID': '11637713',
+                'ISSUEDATE': '20241204',
+                'ALBUMNAME': '"Love Live! Nijigasaki High School Idol Club The Movie - Finale - Chapter 1" Original Soundtrack & Vocal Collection: Sangosho no Kioku',
+                'ALBUMNAMEDP': '&quot;Love Live! Nijigasaki High School Idol Club The Movie - Finale - Chapter 1&quot; Original Soundtrack & Vocal Collection: Sangosho no Kioku'
+            }, {
+                'ALBUMIMG': 'https://cdnimg.melon.co.kr/cm2/album/images/112/49/751/11249751_20230523112802.jpg/melon/resize/40',
+                'ARTISTNAME': 'IDOLiSH7,TRIGGER,Re:vale,ŹOOĻ',
+                'ALBUMID': '11249751',
+                'ISSUEDATE': '20230524',
+                'ALBUMNAME': 'IDOLiSH7 the Movie LIVE 4bit Compilation Album "BEYOND THE PERiOD" [DAY 2]',
+                'ALBUMNAMEDP': 'IDOLiSH7 the Movie LIVE 4bit Compilation Album &quot;BEYOND THE PERiOD&quot; [DAY 2]'
+            }, {
+                'ALBUMIMG': 'https://cdnimg.melon.co.kr/cm2/album/images/111/03/587/11103587_20221118124231.jpg/melon/resize/40',
+                'ARTISTNAME': 'Idol',
+                'ALBUMID': '11103587',
+                'ISSUEDATE': '20221118',
+                'ALBUMNAME': 'This Christmas (Idol 2022)',
+                'ALBUMNAMEDP': 'This Christmas (Idol 2022)'
+            }, {
+                'ALBUMIMG': 'https://cdnimg.melon.co.kr/cm2/album/images/112/99/891/11299891_20230804104517.jpg/melon/resize/40',
+                'ARTISTNAME': 'Vietnam Idol',
+                'ALBUMID': '11299891',
+                'ISSUEDATE': '20230805',
+                'ALBUMNAME': 'Vietnam Idol (2023) - Tập 5',
+                'ALBUMNAMEDP': 'Vietnam Idol (2023) - Tập 5'
+            }, {
+                'ALBUMIMG': 'https://cdnimg.melon.co.kr/cm2/album/images/115/13/048/11513048_20240614142318.jpg/melon/resize/40',
+                'ARTISTNAME': 'The Idolm@ster Cinderella Girls',
+                'ALBUMID': '11513048',
+                'ISSUEDATE': '20240617',
+                'ALBUMNAME': 'The Idolm@ster Cinderella Girls 10th Anniversary M@gical Wonderland!!! Original Album the Idolm@ster Cinderella Girls to D@nce to Too! (Game Version)',
+                'ALBUMNAMEDP': 'The Idolm@ster Cinderella Girls 10th Anniversary M@gical Wonderland!!! Original Album the Idolm@ster Cinderella Girls to D@nce to Too! (Game Version)'
+            }, {
+                'ALBUMIMG': 'https://cdnimg.melon.co.kr/cm2/album/images/110/35/947/11035947_20220823143825.jpg/melon/resize/40',
+                'ARTISTNAME': 'IDOLiSH7,TRIGGER,ŹOOĻ,Re:vale',
+                'ALBUMID': '11035947',
+                'ISSUEDATE': '20220817',
+                'ALBUMNAME': 'IDOLiSH7 7th Anniversary Song "CROSSOVER ROTATION"',
+                'ALBUMNAMEDP': 'IDOLiSH7 7th Anniversary Song &quot;CROSSOVER ROTATION&quot;'
+            }, {
+                'ALBUMIMG': 'https://cdnimg.melon.co.kr/cm2/album/images/112/49/753/11249753_20230523112837.jpg/melon/resize/40',
+                'ARTISTNAME': 'IDOLiSH7,TRIGGER,Re:vale,ŹOOĻ',
+                'ALBUMID': '11249753',
+                'ISSUEDATE': '20230524',
+                'ALBUMNAME': 'Movie IDOLiSH7 LIVE 4bit Compilation Album "BEYOND THE PERiOD" [DAY 1]',
+                'ALBUMNAMEDP': 'Movie IDOLiSH7 LIVE 4bit Compilation Album &quot;BEYOND THE PERiOD&quot; [DAY 1]'
+            }, {
+                'ALBUMIMG': 'https://cdnimg.melon.co.kr/cm2/album/images/109/62/000/10962000_20220519121045.jpg/melon/resize/40',
+                'ARTISTNAME': 'Billy Idol',
+                'ALBUMID': '10962000',
+                'ISSUEDATE': '19820101',
+                'ALBUMNAME': 'Billy Idol',
+                'ALBUMNAMEDP': 'Billy Idol'
+            }],
+            'KEYWORDCONTENTS': [{
+                'KEYWORDDP': 'Your Idol',
+                'KEYWORD': 'Your Idol'
+            }, {
+                'KEYWORDDP': 'Idol',
+                'KEYWORD': 'Idol'
+            }, {
+                'KEYWORDDP': 'Super Idol',
+                'KEYWORD': 'Super Idol'
+            }, {
+                'KEYWORDDP': 'IDOLiSH7',
+                'KEYWORD': 'IDOLiSH7'
+            }, {
+                'KEYWORDDP': 'Fake Idol',
+                'KEYWORD': 'Fake Idol'
+            }],
+            'httpDomain': 'http://www.melon.com',
+            'httpsDomain': 'https://www.melon.com',
+            'staticDomain': 'https://static.melon.co.kr'
+        };
+
+        // 데이터 렌더링 함수
+        function renderContent() {
+            const artistsContainer = document.getElementById('artists-section');
+            const songsContainer = document.getElementById('songs-section');
+            const albumsContainer = document.getElementById('albums-section');
+            const keywordsContainer = document.getElementById('keywords-container');
+
+            // 기존 내용 비우기
+            artistsContainer.innerHTML = '';
+            songsContainer.innerHTML = '';
+            albumsContainer.innerHTML = '';
+            keywordsContainer.innerHTML = '';
+
+            // 아티스트 렌더링
+            if (jsonData.ARTISTCONTENTS && jsonData.ARTISTCONTENTS.length > 0) {
+                jsonData.ARTISTCONTENTS.forEach(artist => {
+                    const artistCard = `
+                        <div class="bg-white rounded-lg shadow-md overflow-hidden transform transition-transform hover:scale-105 duration-200">
+                            <img src="${artist.ARITSTIMG || 'https://via.placeholder.com/40'}" alt="${artist.ARTISTNAME}" class="w-full h-40 object-cover object-center">
+                            <div class="p-4">
+                                <h3 class="text-lg font-semibold text-gray-900 truncate mb-1">${artist.ARTISTNAME}</h3>
+                                <p class="text-sm text-gray-600">국적: ${artist.NATIONALITYNAME || '정보 없음'}</p>
+                                <p class="text-sm text-gray-600">성별: ${artist.SEX || '정보 없음'}</p>
+                                <p class="text-sm text-gray-600">유형: ${artist.ACTTYPENAMES || '정보 없음'}</p>
+                            </div>
+                        </div>
+                    `;
+                    artistsContainer.innerHTML += artistCard;
+                });
+            } else {
+                artistsContainer.innerHTML = '<p class="text-gray-500 text-center col-span-full py-8">아티스트 정보가 없습니다.</p>';
+            }
+
+
+            // 노래 렌더링
+            if (jsonData.SONGCONTENTS && jsonData.SONGCONTENTS.length > 0) {
+                jsonData.SONGCONTENTS.forEach(song => {
+                    const songCard = `
+                        <div class="bg-white rounded-lg shadow-md overflow-hidden transform transition-transform hover:scale-105 duration-200">
+                            <img src="${song.ALBUMIMG || 'https://via.placeholder.com/40'}" alt="${song.SONGNAME} 앨범 커버" class="w-full h-40 object-cover object-center">
+                            <div class="p-4">
+                                <h3 class="text-lg font-semibold text-gray-900 truncate mb-1">${song.SONGNAME}</h3>
+                                <p class="text-sm text-gray-600 truncate">아티스트: ${song.ARTISTNAME}</p>
+                                <p class="text-sm text-gray-600 truncate">앨범: ${song.ALBUMNAME}</p>
+                            </div>
+                        </div>
+                    `;
+                    songsContainer.innerHTML += songCard;
+                });
+            } else {
+                songsContainer.innerHTML = '<p class="text-gray-500 text-center col-span-full py-8">노래 정보가 없습니다.</p>';
+            }
+
+            // 앨범 렌더링
+            if (jsonData.ALBUMCONTENTS && jsonData.ALBUMCONTENTS.length > 0) {
+                jsonData.ALBUMCONTENTS.forEach(album => {
+                    const albumCard = `
+                        <div class="bg-white rounded-lg shadow-md overflow-hidden transform transition-transform hover:scale-105 duration-200">
+                            <img src="${album.ALBUMIMG || 'https://via.placeholder.com/40'}" alt="${album.ALBUMNAME} 앨범 커버" class="w-full h-40 object-cover object-center">
+                            <div class="p-4">
+                                <h3 class="text-lg font-semibold text-gray-900 truncate mb-1">${album.ALBUMNAME}</h3>
+                                <p class="text-sm text-gray-600 truncate">아티스트: ${album.ARTISTNAME}</p>
+                                <p class="text-sm text-gray-600">발매일: ${album.ISSUEDATE ? album.ISSUEDATE.slice(0, 4) + '.' + album.ISSUEDATE.slice(4, 6) + '.' + album.ISSUEDATE.slice(6, 8) : '정보 없음'}</p>
+                            </div>
+                        </div>
+                    `;
+                    albumsContainer.innerHTML += albumCard;
+                });
+            } else {
+                albumsContainer.innerHTML = '<p class="text-gray-500 text-center col-span-full py-8">앨범 정보가 없습니다.</p>';
+            }
+
+            // 키워드 렌더링
+            if (jsonData.KEYWORDCONTENTS && jsonData.KEYWORDCONTENTS.length > 0) {
+                jsonData.KEYWORDCONTENTS.forEach(keyword => {
+                    const keywordTag = `
+                        <span class="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full cursor-pointer hover:bg-blue-200 transition-colors duration-200">
+                            ${keyword.KEYWORDDP}
+                        </span>
+                    `;
+                    keywordsContainer.innerHTML += keywordTag;
+                });
+            } else {
+                keywordsContainer.innerHTML = '<p class="text-gray-500">관련 키워드가 없습니다.</p>';
+            }
+        }
+
+        // 탭 전환 기능
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // 모든 탭 버튼의 활성 상태 제거
+                tabButtons.forEach(btn => {
+                    btn.classList.remove('text-blue-600', 'border-blue-500');
+                    btn.classList.add('text-gray-600', 'border-transparent');
+                });
+
+                // 클릭된 버튼 활성 상태 설정
+                button.classList.add('text-blue-600', 'border-blue-500');
+                button.classList.remove('text-gray-600', 'border-transparent');
+
+                // 모든 탭 내용 숨기기
+                tabContents.forEach(content => {
+                    content.classList.add('hidden');
+                });
+
+                // 선택된 탭 내용 보이기
+                const targetTab = button.dataset.tab;
+                document.getElementById(`${targetTab}-section`).classList.remove('hidden');
+            });
+        });
+
+        // 페이지 로드 시 초기 렌더링 및 첫 번째 탭 활성화
+        document.addEventListener('DOMContentLoaded', () => {
+            renderContent();
+            // 첫 번째 탭 (아티스트) 활성화
+            const firstTabButton = document.querySelector('.tab-button[data-tab="artists"]');
+            if (firstTabButton) {
+                firstTabButton.click(); // 클릭 이벤트를 트리거하여 활성화 및 내용 표시
+            }
+        });
+
+    </script>
+</body>
+</html>
